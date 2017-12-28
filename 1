@@ -36,7 +36,7 @@ void transpose(double* data, ull mat_size) {
     }
 }
 
-double* multiply(double *a, double *b, ull mat_size) {
+void multiply(double *a, double *b, ull mat_size) {
     double *c;
     c = (double *)aligned_alloc(32, sizeof(double)*mat_size*mat_size);
 
@@ -59,13 +59,10 @@ double* multiply(double *a, double *b, ull mat_size) {
 
         }
     }
-    return c;
 }
 
-void save_mat(double *data, const char* file, ull mat_size) {
+void save_mat(double **data, const char* file, ull mat_size) {
     FILE *fp = fopen(file, "rb");
-    fwrite(data, sizeof(double)*mat_size*mat_size, 1, fp);
-    fclose(fp);
 }
 
 
@@ -76,11 +73,11 @@ int main(int argc, char **argv) {
     }
     double *data_a;
     double *data_b;
-    double *data_c;
     show_time(load_mat(argv[1], data_a), "load a");
     ull mat_size;
     show_time(mat_size = load_mat(argv[2], data_b), "load b");
     show_time(transpose(data_b, mat_size), "transpose");
-    show_time(data_c = multiply(data_a, data_b, mat_size), "multiply");
-    show_time(save_mat(data_c, argv[3], mat_size), "save mat");
+    show_time(multiply(data_a, data_b, mat_size), "multiply");
+    //getchar();
+    //
 }

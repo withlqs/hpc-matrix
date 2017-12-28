@@ -1,6 +1,7 @@
 CXX = icpc
 CXXFLAGS += -O3 -Wall -Isrc -fopenmp -march=native
 SRC_DIR = src
+SIZE = 500
 
 cpu.run: $(SRC_DIR)/cpu/main.cpp utils.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
@@ -15,10 +16,10 @@ utils.o: $(SRC_DIR)/utils/main.cpp
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 a.mat: generator.run
-	./$< 1000 $@ 1994
+	./$< $(SIZE) $@ 1994
 
 b.mat: generator.run
-	./$< 1000 $@ 1995
+	./$< $(SIZE) $@ 1995
 
 .PHONY: clean matrix test
 
@@ -27,8 +28,8 @@ test: cpu.run a.mat b.mat
 
 
 matrix: generator.run
-	./$< 1000 a.mat 1994
-	./$< 1000 b.mat 1995
+	./$< $(SIZE) a.mat 1994
+	./$< $(SIZE) b.mat 1995
 
 clean:
 	-rm ./*.run

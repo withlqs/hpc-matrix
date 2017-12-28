@@ -6,9 +6,9 @@
     gettimeofday(&t_start, NULL); \
     func; \
     gettimeofday(&t_end, NULL); \
-    ull start =  ((ull)t_start.tv_sec)*1000+(ull)t_start.tv_usec/1000; \
-    ull end = ((ull)t_end.tv_sec)*1000+(ull)t_end.tv_usec/1000; \
-    printf(#str" time:%.3f\n", (double)(end-start)/1000); \
+    ull start =  (ull)t_start.tv_sec*1000000+(ull)t_start.tv_usec; \
+    ull end = (ull)t_end.tv_sec*1000000+(ull)t_end.tv_usec; \
+    printf(#str" time:%.6f\n", (double)(end-start)/1000000); \
 } while (false)
 
 typedef unsigned long long ull;
