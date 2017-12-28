@@ -1,25 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
-typedef unsigned long long ull;
-
-
-ull root(ull num) {
-    ull v= sqrt(num);
-    if ((v-1)*(v-1) == num) {
-        return v-1;
-    }
-    if (v*v == num) {
-        return v;
-    }
-    if ((v+1)*(v+1) == num) {
-        return v+1;
-    }
-    printf("error: can not sqrt size.\n");
-    exit(-1);
-    return 0;
-}
+#include <utils/utils.h>
 
 
 int main(int argc, char **argv) {
@@ -37,7 +19,7 @@ int main(int argc, char **argv) {
     file_size = ftell(fp);
     fseek(fp, 0L, SEEK_SET);
     double value;
-    ull mat_size = root(file_size/sizeof(double));
+    ull mat_size = int_root(file_size/sizeof(double));
     for (int i = 0; i < mat_size; ++i) {
         for (int j = 0; j < mat_size; ++j) {
             fread(&value, sizeof(double), 1, fp);
