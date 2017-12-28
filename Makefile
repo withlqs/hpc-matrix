@@ -1,16 +1,19 @@
-CC = icpc
-CFLAGS = -O3 -Wall
+CXX = icpc
+CXXFLAGS += -O3 -Wall
+SRC_DIR = src
 
-generator.run: generator/main.cpp Makefile
-	$(CC) $(CFLAGS) generator/main.cpp -o generator.run
+generator.run: $(SRC_DIR)/generator/main.cpp
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
-viewer.run: viewer/main.cpp Makefile
-	$(CC) $(CFLAGS) viewer/main.cpp -o viewer.run
+viewer.run: $(SRC_DIR)/viewer/main.cpp
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+.PHONY: clean matrix
 
 matrix: generator.run
-	./generator.run 500 a.mat 1994
-	./generator.run 500 b.mat 1995
+	./$< 500 a.mat 1994
+	./$< 500 b.mat 1995
 
 clean:
-	rm ./*.run
-	rm ./*.mat
+	-rm ./*.run
+	-rm ./*.mat
