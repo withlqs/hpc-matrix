@@ -13,3 +13,4 @@ matrix: generator.run
 
 clean:
 	rm ./*.run
+	rm ./*.mat
