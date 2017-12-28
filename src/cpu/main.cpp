@@ -63,7 +63,7 @@ double* multiply(double *a, double *b, ull mat_size) {
 }
 
 void save_mat(double *data, const char* file, ull mat_size) {
-    FILE *fp = fopen(file, "rb");
+    FILE *fp = fopen(file, "wb");
     fwrite(data, sizeof(double)*mat_size*mat_size, 1, fp);
     fclose(fp);
 }
