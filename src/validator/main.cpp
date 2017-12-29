@@ -1,5 +1,5 @@
 #include <cstdio>
-#include <utils/utils.h>
+#include <utils.h>
 #include <mkl.h>
 #include <cmath>
 

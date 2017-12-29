@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <utils/utils.h>
+#include <utils.h>
 #include <algorithm>
 #include <cstring>
 #include <omp.h>

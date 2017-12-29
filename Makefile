@@ -1,5 +1,5 @@
 CXX = icpc
-CXXFLAGS += -O3 -Wall -Isrc -fopenmp -march=native -mkl
+CXXFLAGS += -O3 -Wall -Isrc/headers -fopenmp -march=native -mkl
 SRC_DIR = src
 SIZE = 370
 

@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <cstdio>
-#include <utils/utils.h>
+#include <utils.h>
 
 ull int_root(ull num) {
     ull v= sqrt(num);
