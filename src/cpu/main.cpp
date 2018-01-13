@@ -12,7 +12,7 @@ typedef unsigned long long ull;
 
 void transpose(double* data, ull mat_size) {
     int i, j;
-    #pragma omp parallel for private(i, j, mat_size, data)
+    #pragma omp parallel for
     for (i = 0; i < mat_size; ++i) {
         //#pragma omp parallel for private(j, i, mat_size, data)
         for (j = i+1; j < mat_size; ++j) {

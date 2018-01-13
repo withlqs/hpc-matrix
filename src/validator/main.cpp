@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
     ull incorrect = 0;
     for (int i = 0; i < mat_size*mat_size; i++) {
         //printf("%f, %f\n", c[i], d[i]);
-        if (fabs(c[i]-d[i]) > 0.01*fabs(c[i])) {
+        if (fabs(c[i]-d[i]) > 1e-8*fabs(c[i])) {
             ++incorrect;
         }
     }

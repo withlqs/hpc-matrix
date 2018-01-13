@@ -1,7 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <utils/utils.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+#include <utils.h>
 
 
 int main(int argc, char **argv) {

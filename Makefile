@@ -1,10 +1,10 @@
 CXX = icpc
-CXXFLAGS += -O3 -Wall -Isrc/headers -fopenmp -march=native -mkl
+CXXFLAGS += -O3 -Wall -Isrc/headers -march=native
 SRC_DIR = src
-SIZE = 370
+SIZE = 12
 
 cpu.run: $(SRC_DIR)/cpu/main.cpp utils.o
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) -qopenmp $^ -o $@
 
 generator.run: $(SRC_DIR)/generator/main.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
@@ -13,27 +13,25 @@ viewer.run: $(SRC_DIR)/viewer/main.cpp utils.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 validator.run: $(SRC_DIR)/validator/main.cpp utils.o
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) -mkl $^ -o $@
 
 utils.o: $(SRC_DIR)/utils/main.cpp
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
-a.mat: generator.run
+a.mat: generator.run Makefile
 	./$< $(SIZE) $@ 1994
 
-b.mat: generator.run
+b.mat: generator.run Makefile
 	./$< $(SIZE) $@ 1995
 
-.PHONY: clean matrix test
+.PHONY: view test_cpu clean
 
-test: cpu.run a.mat b.mat validator.run
+view: viewer.run a.mat
+	./$< a.mat
+
+test_cpu: cpu.run a.mat b.mat validator.run
 	./$< a.mat b.mat c.mat
 	./validator.run a.mat b.mat c.mat
-
-
-matrix: generator.run
-	./$< $(SIZE) a.mat 1994
-	./$< $(SIZE) b.mat 1995
 
 clean:
 	-rm ./*.run
