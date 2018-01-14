@@ -24,13 +24,15 @@ void transpose(double* data, ull mat_size) {
 double* multiply(double *a, double *b, ull mat_size) {
     double *c = (double *)aligned_alloc(64, sizeof(double)*mat_size*mat_size);
 
+    __m256d av, bv, cv, dv;
+    double *d;
+    double sum;
+    #pragma omp parallel for
     for (int i = 0; i < mat_size; ++i) {
-        #pragma omp parallel for
+        #pragma omp parallel for private(av, bv, cv, dv, d, sum)
         for (int j = 0; j < mat_size; ++j) {
-            double sum = 0.0;
+            sum = 0.0;
             for (int k = 0; k < mat_size; k += 4) {
-                __m256d av, bv, cv, dv;
-                double *d;
                 av = _mm256_load_pd(a+i*mat_size+k);
                 bv = _mm256_load_pd(b+j*mat_size+k);
                 cv = _mm256_mul_pd(av, bv);

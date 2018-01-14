@@ -1,7 +1,7 @@
 CXX = icpc
 CXXFLAGS += -O3 -Wall -Isrc/headers -march=native
 SRC_DIR = src
-SIZE = 12
+SIZE = 8000
 
 cpu.run: $(SRC_DIR)/cpu/main.cpp utils.o
 	$(CXX) $(CXXFLAGS) -qopenmp $^ -o $@
