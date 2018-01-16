@@ -15,3 +15,4 @@ typedef unsigned long long ull;
 
 ull int_root(ull num);
 ull load_mat(const char* file, double* &data);
+void save_mat(const char* file, double* data, ull mat_size);

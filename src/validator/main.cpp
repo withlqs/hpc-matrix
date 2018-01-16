@@ -23,6 +23,7 @@ int main(int argc, char **argv) {
 
     show_time(cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, mat_size, mat_size, mat_size, 1.0, a, mat_size, b, mat_size, 0.0, c, mat_size), [info] mkl);
     double* d;
+    //save_mat("d.mat", c, mat_size);
     show_time(load_mat(argv[3], d), [info] load mat file);
     ull incorrect = 0;
     for (int i = 0; i < mat_size*mat_size; i++) {

@@ -1,5 +1,5 @@
 CXX = icpc
-CXXFLAGS += -O3 -Wall -Isrc/headers -march=native
+CXXFLAGS = -O3 -Wall -Isrc/headers -march=native
 SRC_DIR = src
 SIZE = 8000
 

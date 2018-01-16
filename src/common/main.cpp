@@ -31,3 +31,9 @@ ull load_mat(const char* file, double* &data) {
     fclose(fp);
     return mat_size;
 }
+
+void save_mat(const char* file, double* data, ull mat_size) {
+    FILE *fp = fopen(file, "wb");
+    fwrite(data, sizeof(double)*mat_size*mat_size, 1, fp);
+    fclose(fp);
+}
