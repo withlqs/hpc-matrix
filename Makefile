@@ -3,19 +3,19 @@ CXXFLAGS += -O3 -Wall -Isrc/headers -march=native
 SRC_DIR = src
 SIZE = 8000
 
-cpu.run: $(SRC_DIR)/cpu/main.cpp utils.o
+cpu.run: $(SRC_DIR)/cpu/main.cpp common.o
 	$(CXX) $(CXXFLAGS) -qopenmp $^ -o $@
 
 generator.run: $(SRC_DIR)/generator/main.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-viewer.run: $(SRC_DIR)/viewer/main.cpp utils.o
+viewer.run: $(SRC_DIR)/viewer/main.cpp common.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-validator.run: $(SRC_DIR)/validator/main.cpp utils.o
+validator.run: $(SRC_DIR)/validator/main.cpp common.o
 	$(CXX) $(CXXFLAGS) -mkl $^ -o $@
 
-utils.o: $(SRC_DIR)/utils/main.cpp
+common.o: $(SRC_DIR)/common/main.cpp
 	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 a.mat: generator.run Makefile

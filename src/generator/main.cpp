@@ -1,6 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
-#include <utils.h>
+#include <common.h>
 
 int main(int argc, char **argv) {
     if (argc != 4) {
