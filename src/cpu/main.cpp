@@ -10,7 +10,7 @@ typedef unsigned long long ull;
 
 using std::swap;
 
-ull threshold = 16;
+ull threshold = 32;
 ull atom_size = 0;
 
 inline void transpose(double **data, ull x, ull y, ull rows, ull cols) {
