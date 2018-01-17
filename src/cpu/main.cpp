@@ -10,7 +10,7 @@ typedef unsigned long long ull;
 
 using std::swap;
 
-ull threshold = 64;
+ull threshold = 16;
 ull atom_size = 0;
 
 inline void transpose(double **data, ull x, ull y, ull rows, ull cols) {
@@ -199,9 +199,16 @@ inline matrix *naive_add(matrix *a, matrix *b) {
     ull size = a->size;
     matrix *c = new matrix(allocate_2d(size), size);
 
+    __m256d av, bv, cv;
     for (ull i = 0; i < size; ++i) {
-        for (ull j = 0; j < size; ++j) {
-            c->data[i][j] = a->data[i][j]+b->data[i][j];
+        for (ull j = 0; j < size; j += 4) {
+            av = _mm256_load_pd(&a->data[i][j]);
+            bv = _mm256_load_pd(&b->data[i][j]);
+            cv = _mm256_add_pd(av, bv);
+            c->data[i][j] = (double)cv[0];
+            c->data[i][j+1] = (double)cv[1];
+            c->data[i][j+2] = (double)cv[2];
+            c->data[i][j+3] = (double)cv[3];
         }
     }
 
@@ -316,6 +323,8 @@ int main(int argc, char **argv) {
     matrix *b = load_block_matrix(argv[2], size, padding_size, true);
 
     matrix *c;
+
+    omp_set_num_threads(24);
 
 #pragma omp parallel
     {  
