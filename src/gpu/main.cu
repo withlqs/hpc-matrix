@@ -54,17 +54,15 @@ __global__ void matrix_multiply(ui size, double *a, double *b, double *c) {
     ui block_x = blockIdx.x;
     ui block_y = blockIdx.y;
 
-    ui begin = size*block_size*block_y;
-    ui end = begin+size;
-
-    //ui y_begin = size*block_size*block_x;
-
     double sum = 0;
 
-    for (ui x = begin, y = size*block_size*block_x; x < end; x += block_size, y += block_size) {
-        sub_a[thread_y][thread_x] = a[x+thread_y*size+thread_x];
-        //__syncthreads();
-        sub_b[thread_x][thread_y] = b[y+thread_x*size+thread_y];
+    ui block_id_a = block_size*block_size*block_y*gridDim.x;
+    ui block_id_b = block_size*block_size*block_x*gridDim.x;
+
+    for (ui x = 0; x < size/block_size; ++x) {
+        sub_a[thread_y][thread_x] = a[block_id_a+x*block_size*block_size+block_size*thread_y+thread_x];
+        __syncthreads();
+        sub_b[thread_y][thread_x] = b[block_id_b+x*block_size*block_size+block_size*thread_y+thread_x];
         __syncthreads();
 #pragma unroll
         for (ui k = 0; k < block_size; ++k) {
@@ -87,6 +85,23 @@ void save_mat(const char* file, double* data, ull mat_size, ull padding_size) {
     fclose(fp);
 }
 
+double *transfer(double *data, ull size) {
+    double *block = (double *)aligned_alloc(64, sizeof(double)*size*size);
+    double *ptr = block;
+    for (ull i = 0; i < size; i += block_size) {
+        for (ull j = 0; j < size; j += block_size) {
+            for (ull k = 0; k < block_size; ++k) {
+                ull x = i+k;
+                for (ull l = 0; l < block_size; ++l) {
+                    ull y = j+l;
+                    (*(ptr++)) = data[x*size+y];
+                }
+            }
+        }
+    }
+    return block;
+}
+
 int main(int argc, char **argv) {
     if (argc != 4) {
         printf("[error] number of arguments is error.\n");
@@ -97,8 +112,11 @@ int main(int argc, char **argv) {
     ull padding_size;
 
     double *a = load_padding_mat(argv[1], mat_size, padding_size);
+    a = transfer(a, padding_size);
     double *b = load_padding_mat(argv[2], mat_size, padding_size);
     transpose(b, padding_size);
+    b = transfer(b, padding_size);
+
 
     double *device_a;
     double *device_b;
