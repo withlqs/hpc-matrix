@@ -12,6 +12,7 @@
 } while (false)
 
 typedef unsigned long long ull;
+typedef unsigned int ui;
 
 ull int_root(ull num);
 ull load_mat(const char* file, double* &data);
