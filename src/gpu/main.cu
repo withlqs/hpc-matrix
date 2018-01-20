@@ -4,7 +4,7 @@
 #include <cuda_runtime.h>
 #include <algorithm>
 
-#define block_size 32
+#define block_size 8
 
 using std::swap;
 
@@ -48,6 +48,7 @@ __global__ void matrix_multiply(ui size, double *a, double *b, double *c) {
 
     __shared__ double sub_a[block_size][block_size];
     __shared__ double sub_b[block_size][block_size];
+
     ui thread_x = threadIdx.x;
     ui thread_y = threadIdx.y;
     ui block_x = blockIdx.x;
@@ -56,11 +57,14 @@ __global__ void matrix_multiply(ui size, double *a, double *b, double *c) {
     ui begin = size*block_size*block_y;
     ui end = begin+size;
 
+    //ui y_begin = size*block_size*block_x;
+
     double sum = 0;
 
-    for (ui x = begin; x < end; x += block_size) {
+    for (ui x = begin, y = size*block_size*block_x; x < end; x += block_size, y += block_size) {
         sub_a[thread_y][thread_x] = a[x+thread_y*size+thread_x];
-        sub_b[thread_y][thread_x] = b[x+thread_y*size+thread_x];
+        //__syncthreads();
+        sub_b[thread_x][thread_y] = b[y+thread_x*size+thread_y];
         __syncthreads();
 #pragma unroll
         for (ui k = 0; k < block_size; ++k) {
@@ -113,8 +117,9 @@ int main(int argc, char **argv) {
     dim3 thread_block(block_size, block_size, 1);
     dim3 thread_grid(padding_size/block_size, padding_size/block_size, 1);
 
-    matrix_multiply<<<thread_grid, thread_block>>>(padding_size, device_a, device_b, device_c);
-    cudaDeviceSynchronize();
+    matrix_multiply<<<thread_grid, thread_block>>>((ui)padding_size, device_a, device_b, device_c);
+    //cudaDeviceSynchronize();
+    show_time(cudaDeviceSynchronize(), [info] GPU time);
     cudaMemcpy(c, device_c, mem_size, cudaMemcpyDeviceToHost);
     save_mat(argv[3], c, mat_size, padding_size);
     return 0;

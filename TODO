@@ -1,1 +1,3 @@
-change new and free block memory method
+CPU: change new and free block memory method
+
+GPU: split to small block

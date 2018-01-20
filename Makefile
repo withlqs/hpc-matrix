@@ -1,7 +1,7 @@
 CXX = icpc
 CXXFLAGS = -O3 -Wall -Isrc/headers -march=native
 SRC_DIR = src
-SIZE = 1000
+SIZE = 8000
 SEED1 = 1994
 SEED2 = 1995
 
@@ -37,11 +37,11 @@ gpu.run: $(SRC_DIR)/gpu/main.cu common.o
 view: viewer.run a.mat
 	./$< a.mat
 
-test_cpu: cpu.run a.mat b.mat validator.run
+cpu: cpu.run a.mat b.mat validator.run
 	srun --exclusive -p cpu ./$< a.mat b.mat c.mat
 	srun --exclusive -p cpu ./validator.run a.mat b.mat c.mat
 
-test_gpu: gpu.run a.mat b.mat validator.run
+gpu: gpu.run a.mat b.mat validator.run
 	srun --exclusive -p gpu ./$< a.mat b.mat c.mat
 	srun --exclusive -p cpu ./validator.run a.mat b.mat c.mat
 
