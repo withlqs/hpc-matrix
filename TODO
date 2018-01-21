@@ -1,3 +1,9 @@
-CPU: change new and free block memory method
+CPU:
+change new and free block memory method
 
-GPU: split to small block
+GPU:
+polish
+
+other:
+change CPU validator name
+add GPU validator
