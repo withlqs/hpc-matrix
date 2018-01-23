@@ -31,7 +31,7 @@ inline void block_transpose(double **origin, ull size) {
 }
 
 inline ull get_padding_size(ull size) {
-    ull padding = threshold*4;
+    ull padding = threshold*8;
     return size+(padding-size%padding)%padding;
 }
 
@@ -180,15 +180,13 @@ inline void save(const char* file, matrix *m, ull origin_size) {
 inline matrix *naive_multiply(matrix *a, matrix *b) {
     ull size = a->size;
     matrix *c = new matrix(allocate_2d(size), size);
-    __m256d av, bv, cv, dv;
+    __m512d av, bv;
     for (ull i = 0; i < size; ++i) {
         for (ull j = 0; j < size; ++j) {
-            for (ull k = 0; k < size; k += 4) {
-                av = _mm256_load_pd(&a->data[i][k]);
-                bv = _mm256_load_pd(&b->data[j][k]);
-                cv = _mm256_mul_pd(av, bv);
-                dv = _mm256_hadd_pd(cv, cv);
-                c->data[i][j] += (double)dv[0]+(double)dv[2];
+            for (ull k = 0; k < size; k += 8) {
+                av = _mm512_load_pd(&(a->data[i][k]));
+                bv = _mm512_load_pd(&(b->data[j][k]));
+                c->data[i][j] += _mm512_reduce_add_pd(_mm512_mul_pd(av, bv));
             }
         }
     }
@@ -199,16 +197,13 @@ inline matrix *naive_add(matrix *a, matrix *b) {
     ull size = a->size;
     matrix *c = new matrix(allocate_2d(size), size);
 
-    __m256d av, bv, cv;
+    __m512d av, bv, cv;
     for (ull i = 0; i < size; ++i) {
-        for (ull j = 0; j < size; j += 4) {
-            av = _mm256_load_pd(&a->data[i][j]);
-            bv = _mm256_load_pd(&b->data[i][j]);
-            cv = _mm256_add_pd(av, bv);
-            c->data[i][j] = (double)cv[0];
-            c->data[i][j+1] = (double)cv[1];
-            c->data[i][j+2] = (double)cv[2];
-            c->data[i][j+3] = (double)cv[3];
+        for (ull j = 0; j < size; j += 8) {
+            av = _mm512_load_pd(&a->data[i][j]);
+            bv = _mm512_load_pd(&b->data[i][j]);
+            cv = _mm512_add_pd(av, bv);
+            _mm512_store_pd(c->data[i]+j, cv);
         }
     }
 

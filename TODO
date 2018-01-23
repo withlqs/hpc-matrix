@@ -7,3 +7,4 @@ polish
 other:
 change CPU validator name
 add GPU validator
+polish Makefile
