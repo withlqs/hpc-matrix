@@ -4,7 +4,7 @@
 #include <cuda_runtime.h>
 #include <algorithm>
 
-#define block_size 8
+#define block_size 15
 
 using std::swap;
 

@@ -1,10 +1,13 @@
 CPU:
-change new and free block memory method
+    change new and free block memory method
 
 GPU:
-polish
+    polish
 
 other:
-change CPU validator name
-add GPU validator
-polish Makefile
+    change CPU validator name
+    add GPU validator
+    polish Makefile
+
+knl:
+    memkind
