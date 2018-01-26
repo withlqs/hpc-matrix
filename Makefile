@@ -41,9 +41,11 @@ $(COMMON_LIB_KNL): $(SRC_DIR)/common/main.cpp
 	$(CXX) $(CXXFLAGS) $(KNL_FLAGS) -c $^ -o $@
 
 a.mat: generator.run Makefile
+	-rm a.mat
 	./$< $(SIZE) $@ $(SEED1)
 
 b.mat: generator.run Makefile
+	-rm b.mat
 	./$< $(SIZE) $@ $(SEED2)
 
 cpu.run: $(SRC_DIR)/cpu/main.cpp $(COMMON_LIB)
@@ -53,7 +55,7 @@ gpu.run: $(SRC_DIR)/gpu/main.cu $(COMMON_LIB)
 	$(NVCC) $(NVCCFLAGS) $^ -o $@
 
 knl.run: $(SRC_DIR)/knl/main.cpp $(COMMON_LIB_KNL)
-	$(CXX) $(CXXFLAGS) $(KNL_FLAGS) -qopenmp $^ -o $@
+	ssh -t knl4 "cd ${CURDIR}; $(CXX) $(CXXFLAGS) $(KNL_FLAGS) -lnuma -qopenmp $^ -o $@"
 
 
 .PHONY: view test_cpu clean
@@ -70,9 +72,9 @@ gpu: gpu.run a.mat b.mat $(GPU_VALIDATOR)
 	srun --exclusive -p cpu ./$(GPU_VALIDATOR) a.mat b.mat c.mat
 
 knl: knl.run a.mat b.mat $(KNL_VALIDATOR)
-	#TODO change ssh or srun and MCDRAM
-	srun -exclusive -N 13 ./$< a.mat b.mat c.mat
-	srun -exclusive -N 13 ./$(KNL_VALIDATOR) a.mat b.mat c.mat
+	#ssh -t knl4 "cd ${CURDIR}; LD_PRELOAD=libautohbw.so ./$< a.mat b.mat c.mat"
+	ssh -t knl3 "cd ${CURDIR}; numactl -m 1 ./$< a.mat b.mat c.mat"
+	ssh -t knl3 "cd ${CURDIR}; ./$(KNL_VALIDATOR) a.mat b.mat c.mat"
 
 clean:
 	-rm ./*.run

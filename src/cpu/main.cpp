@@ -180,7 +180,7 @@ inline void save(const char* file, matrix *m, ull origin_size) {
 inline matrix *naive_multiply(matrix *a, matrix *b) {
     ull size = a->size;
     matrix *c = new matrix(allocate_2d(size), size);
-    _m256d av, bv, cv, dv;
+    __m256d av, bv, cv, dv;
     for (ull i = 0; i < size; ++i) {
         for (ull j = 0; j < size; ++j) {
             for (ull k = 0; k < size; k += 4) {
